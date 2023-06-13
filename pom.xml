@@ -1,0 +1,167 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.lucee</groupId>
+  <artifactId>hsqldb-jdk8</artifactId>
+  <version>2.7.2.jdk8</version>
+  <name>hsqldb-jdk8</name>
+  <packaging>bundle</packaging>
+
+  <description>OSGi Version of hsqldb-jdk8</description>
+  <url>http://maven.lucee.org/hsqldb-jdk8/</url>
+
+  <!-- same license as the original jar -->
+  <licenses>
+<license>
+		<name>BSD License</name>
+		<url>http://www.opensource.org/licenses/bsd-license.php</url>
+		<distribution>repo</distribution>
+	</license>
+  </licenses>
+
+  <developers>
+<developer>
+      <id>micstriit</id>
+      <name>Michael Offner</name>
+      <email>michael@lucee.org</email>
+      <organization>Lucee Association Switzerland</organization>
+      <organizationUrl>http://lucee.org</organizationUrl>
+      <roles>
+        <role>Project-Administrator</role>
+        <role>Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+
+  <build>
+    <plugins>
+      <plugin>
+      <groupId>org.sonatype.plugins</groupId>
+      <artifactId>nexus-staging-maven-plugin</artifactId>
+      <version>1.6.3</version>
+      <extensions>true</extensions>
+      <configuration>
+        <serverId>ossrh</serverId>
+        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+      </configuration>
+    </plugin>
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-gpg-plugin</artifactId>
+      <version>1.5</version>
+      <executions>
+        <execution>
+          <id>sign-artifacts</id>
+          <phase>verify</phase>
+          <goals>
+            <goal>sign</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-release-plugin</artifactId>
+      <version>2.5</version>
+      <configuration>
+        <autoVersionSubmodules>true</autoVersionSubmodules>
+        <useReleaseProfile>false</useReleaseProfile>
+        <releaseProfiles>release</releaseProfiles>
+        <goals>deploy</goals>
+      </configuration>
+    </plugin>
+
+    <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-dependency-plugin</artifactId>
+         <version>2.10</version>
+         <executions>
+           <execution>
+             <id>unpack</id>
+             <phase>validate</phase>
+             <goals>
+               <goal>unpack</goal>
+             </goals>
+             <configuration>
+               <artifactItems>
+                 <artifactItem>
+                   <groupId>org.hsqldb</groupId>
+                    <artifactId>hsqldb</artifactId>
+                    <version>2.7.2</version>
+                    <classifier>jdk8</classifier>
+                   <type>jar</type>
+                   <overWrite>false</overWrite>
+                   <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                 </artifactItem>
+               </artifactItems>
+               <overWriteReleases>true</overWriteReleases>
+               <overWriteSnapshots>true</overWriteSnapshots>
+             </configuration>
+           </execution>
+         </executions>
+       </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>5.1.2</version>
+        <configuration>
+          <unpackBundle>true</unpackBundle>
+          <instructions>
+            <Bundle-Name>org.lucee.hsqldb</Bundle-Name>
+            <Bundle-SymbolicName>org.lucee.hsqldb</Bundle-SymbolicName>
+            <Bundle-Description>OSGI version of jar ${project.name}</Bundle-Description>
+            <Export-Package>*,META-INF.services.*</Export-Package>
+            <!-- <Require-Bundle></Require-Bundle> -->
+            <!-- <Require-Bundle-Fragment></Require-Bundle-Fragment> -->
+            <Import-Package>!java.awt,!java.awt.event,!java.io,!java.lang,!java.lang.invoke,!java.lang.reflect,!java.math,!java.net,!java.nio,!java.nio.channels,!java.nio.charset,!java.security,!java.security.cert,!java.security.spec,!java.sql,!java.text,!java.time,!java.time.temporal,!java.util,!java.util.concurrent,!java.util.concurrent.atomic,!java.util.concurrent.locks,!java.util.logging,!java.util.regex,!java.util.zip,!javax.crypto,!javax.crypto.spec,!javax.naming,!javax.naming.directory,!javax.naming.ldap,!javax.naming.spi,!javax.net,!javax.net.ssl,!javax.security.auth,!javax.security.auth.callback,!javax.security.auth.login,!javax.security.auth.x500,!javax.sql,!javax.swing,!javax.swing.border,!javax.swing.event,!org.w3c.dom,!org.w3c.dom.bootstrap,!org.xml.sax,!sun.misc,!org.apache.log4j,!org.apache.logging.log4j,*</Import-Package>
+            <DynamicImport-Package>org.apache.log4j,org.apache.logging.log4j</DynamicImport-Package>
+            <!-- <Fragment-Host></Fragment-Host> -->
+            <Specification-Vendor>The HSQL Development Group</Specification-Vendor>
+						<Main-Class>org.hsqldb.util.DatabaseManagerSwing</Main-Class>
+						<Manifest-Version>1.0</Manifest-Version>
+						<Specification-Version>2.7.2</Specification-Version>
+						<Implementation-Vendor>The HSQL Development Group</Implementation-Vendor>
+						<Sealed>true</Sealed>
+						<Implementation-Title>Standard runtime</Implementation-Title>
+						<Bundle-Description>HyperSQL Lightweight 100&#x25; Java SQL Database Engine</Bundle-Description>
+						<Specification-Title>HSQLDB</Specification-Title>
+						<Ant-Version>Apache Ant 1.10.8</Ant-Version>
+						<Originally-Created-By>11.0.14.1&#x2b;1 &#x28;Eclipse Adoptium&#x29;</Originally-Created-By>
+						<Implementation-Version>2.7.2</Implementation-Version>
+						<Build-Vendor>ft</Build-Vendor>
+						<Created-By>11.0.14.1 &#x28;Eclipse Adoptium&#x29;</Created-By>
+            <!-- Embed Dependency -->
+            <_noee>true</_noee>
+          </instructions>
+        </configuration>
+        <extensions>true</extensions>
+      </plugin>
+
+
+    </plugins>
+  </build>
+
+
+  <scm>
+    <url>https://github.com/lucee/osgi-bundle-hsqldb-jdk8</url>
+    <connection>scm:git:git://github.com/lucee/osgi-bundle-hsqldb-jdk8.git</connection>
+    <developerConnection>scm:git:git@github.com:lucee/osgi-bundle-hsqldb-jdk8.git</developerConnection>
+    <tag>hsqldb-jdk8 OSGi library</tag>
+  </scm>
+
+  <distributionManagement>
+    <repository>
+    <id>ossrh</id>
+    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+</project>
